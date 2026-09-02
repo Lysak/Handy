@@ -194,6 +194,11 @@
         "noResults": "No languages found",
         "auto": "Auto"
       },
+      "autodetectLanguages": {
+        "title": "Auto-detect languages",
+        "description": "Restrict language auto-detection to the languages you pick. Leave empty to detect any language the model supports. Only applies when Language is set to Auto Detect. Changes take effect after restarting the app.",
+        "all": "Any supported language"
+      },
       "shortcutActivation": {
         "title": "Shortcut Behavior",
         "description": "Choose how the transcribe shortcut starts and stops recording.",
