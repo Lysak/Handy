@@ -419,6 +419,12 @@ pub struct AppSettings {
     pub translate_to_english: bool,
     #[serde(default = "default_selected_language")]
     pub selected_language: String,
+    /// Fork-local: when non-empty, whisper language auto-detection is
+    /// constrained to these ISO codes (e.g. ["uk", "en"]). Empty keeps the
+    /// stock full-autodetect behaviour. Threaded to transcribe.cpp via the
+    /// TRANSCRIBE_WHISPER_ALLOWED_LANGS env var; JSON-only, no UI.
+    #[serde(default)]
+    pub allowed_languages: Vec<String>,
     #[serde(default = "default_overlay_position")]
     pub overlay_position: OverlayPosition,
     #[serde(default = "default_debug_mode")]
@@ -929,6 +935,7 @@ pub fn get_default_settings() -> AppSettings {
         selected_output_device: None,
         translate_to_english: false,
         selected_language: "auto".to_string(),
+        allowed_languages: Vec::new(),
         overlay_position: default_overlay_position(),
         debug_mode: false,
         log_level: default_log_level(),

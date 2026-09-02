@@ -2038,6 +2038,29 @@ pub fn apply_accelerator_settings(app: &tauri::AppHandle) {
     info!("ORT accelerator set to: {}", ort_pref);
 }
 
+/// Fork-local: publish `settings.allowed_languages` to transcribe.cpp through
+/// the `TRANSCRIBE_WHISPER_ALLOWED_LANGS` env var, which constrains whisper
+/// language auto-detection to that ISO-code set. Empty list clears it (stock
+/// full-autodetect). Read once by the native lib on the first transcription,
+/// so this must run before any model use; changes need an app restart.
+pub fn apply_language_allowlist_env(app: &tauri::AppHandle) {
+    const VAR: &str = "TRANSCRIBE_WHISPER_ALLOWED_LANGS";
+    let codes: Vec<String> = get_settings(app)
+        .allowed_languages
+        .into_iter()
+        .map(|c| c.trim().to_string())
+        .filter(|c| !c.is_empty())
+        .collect();
+    if codes.is_empty() {
+        std::env::remove_var(VAR);
+        info!("whisper language allow-list: unset (full autodetect)");
+    } else {
+        let joined = codes.join(",");
+        std::env::set_var(VAR, &joined);
+        info!("whisper language allow-list: {joined}");
+    }
+}
+
 #[derive(Serialize, Clone, Debug, Type)]
 pub struct GpuDeviceOption {
     pub id: String,

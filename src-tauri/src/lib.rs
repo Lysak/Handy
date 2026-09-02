@@ -888,6 +888,10 @@ pub fn run(cli_args: CliArgs) {
         .setup(move |app| {
             specta_builder.mount_events(app);
 
+            // Fork-local: constrain whisper language autodetect from
+            // settings.allowed_languages before any model loads (#local).
+            managers::transcription::apply_language_allowlist_env(app.handle());
+
             // Headless one-shot path (`--transcribe-file` / `--list-devices` /
             // `--list-models`): initialize only what transcription needs — the
             // store/paths plugins, the model + transcription managers, and the
